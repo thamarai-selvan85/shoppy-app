@@ -1,0 +1,251 @@
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sticky-top">
+            <div class="sidebar-heading"> </div>
+            <div class="list-group list-group-flush">
+                <!-- <a routerLink="dashboard" class="list-group-item list-group-item-action bg-light"
+                    routerLinkActive='active'><i style="margin-right: 7px;" class="fa fa-shopping-basket"
+                        aria-hidden="true"></i>Products</a> -->
+
+                        <a routerLink="dashboard" class="list-group-item list-group-item-action bg-light"
+                    routerLinkActive='active'><img src="assets/images/iconssidebar.png" width="25px" style="margin-right: 5px;" alt="">Products</a>
+                    <a routerLink="dashboard" class="list-group-item list-group-item-action bg-light"
+                    routerLinkActive='active'><img src="assets/images/orders.png" width="25px" style="margin-right: 5px;" alt="">Orders</a>
+                    <a routerLink="dashboard" class="list-group-item list-group-item-action bg-light"
+                    routerLinkActive='active'><img src="assets/images/return.png" width="25px" style="margin-right: 5px;" alt="">Return Orders</a>
+            </div>
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+            <i class="fa fa-bars" aria-hidden="true" id="menu-toggle"></i>
+            <div class="logo">
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0 topBarNav" style="padding-right: 2.5em;">
+
+                    <li class="nav-item cartIcon">
+                    </li>
+                    <li class="nav-item userName">Welcome!</li>
+                    <li class="nav-item dropdown">
+                        <span style="padding: 0em 0em;color: #000;cursor: pointer;" class="dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </span>
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" routerLink="settings"><i class="fa fa-cog fa-fw"
+                                    aria-hidden="true"></i>User
+                                Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item"><i class="fa fa-lock fa-fw" aria-hidden="true"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid main-page">
+            <div class="row mt-2 mr-2">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-primary add-btn" data-toggle="modal"
+                        data-target="#productModal" (click)="openModal()">Add New Product</button>
+                </div>
+            </div>
+
+            <section class="pricing-section mt-2">
+                <div class="container">   
+                    <div class="row " style="text-align: center;" *ngIf="productsList == ''">
+                        <div class="col-md-3"></div>
+                        <p class="col-md-6" >No Products Available!</p> </div>                 
+                    <div class="row" *ngIf="productsList != ''">
+                        <div class="col-md-3 col-sm-3 mb-3" *ngFor="let product of productsList">
+                            <div class="price-card featured" style="cursor: pointer;">
+                                <div class="bg-white rounded">
+                                    <img src="{{http.imageURL}}{{ product.file }}" alt="" width="60%" class=" rounded-circle img-thumbnail shadow-sm"  onerror="this.src='assets/images/cover.jpg'">
+                                </div>
+                                <div class="bbb_deals_content">
+                                    <div class="bbb_deals_info_line d-flex flex-row justify-content-start" style="margin-top: 10px;">
+                                        <div class="bbb_deals_item_category"><p style="font-size: 13px; color: #064497;">{{product.name | uppercase}}</p></div>
+                                        <div class="bbb_deals_item_price_a ml-auto"></div>
+                                    </div>
+                                    <div class="bbb_deals_info_line d-flex flex-row justify-content-start"  >
+                                        <div class="bbb_deals_item_name" style="font-size: 11px;color: grey;">{{product.category_name}}</div>
+                                        <div class="bbb_deals_item_price ml-auto" style="font-size: 13px;font-weight: 600;color: rgb(236, 206, 166);">₹{{product.price}}</div>
+                                    </div>
+                                    <div class="available">
+                                        <div class="dropdown show ">
+                                            <button class="btn btn-primary btn1"
+                                               
+                                                data-toggle="modal" data-target="#productModal" (click)="editProduct(product)"
+                                                data-placement="top" title="Edit "><i class="fa fa-pencil-square-o"
+                                                    aria-hidden="true"></i></button>
+                                            <button class="btn btn-primary btn2"
+                                                style=""
+                                                data-toggle="tooltip" data-placement="top" title="Delete "
+                                                (click)="deleteUser(product)">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div class="available_bar"><span style="width:17%"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+</div>
+
+
+<div class="modal fade" id="productModal" data-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p *ngIf="addnew" class="modal-title" id="productModalLabel">Add New Product</p>
+                <p *ngIf="!addnew" class="modal-title" id="productModalLabel">Edit Product</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" #createFormModal>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="get-in-touch">
+                    <form class="contact-form" [formGroup]="productCreateForm">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="profileimage">
+                                    <div>
+                                        <div class="p-image">
+                                            <img class="rounded-circle" #img width="80px" height="80px" [src]="images"
+                                                onerror="this.src='assets/images/download.png'" />
+                                            <input #fileInput class="file-upload" id="file-upload" type="file"
+                                                (change)="fileChangeEvent($event)" accept=".jpg, .jpeg, .png, .gif," />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom: 0 !important;">
+                            <div class="form-field col-lg-6">
+                                <input id="name" formControlName="product_name" class="input-text js-input" type="text"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    minlength="3" maxlength="25" (keydown)="whiteSpaceCheck($event)"
+                                    [ngClass]="{newerror: formcon['product_name'].touched && formcon['product_name'].invalid}">
+                                <label class="label required-field" for="name">Product Name</label>
+
+                                <div *ngIf="(formcon['product_name']?.touched || formcon['product_name']?.dirty) && formcon['product_name']?.invalid"
+                                    class="text-danger">
+                                    <small *ngIf="formcon['product_name'].errors?.['required']" class="required-field">
+                                        Product Name is required!</small>
+                                    <small *ngIf="formcon['product_name'].errors?.['minlength']" class="required-field">
+                                        Minimum length is 3 characters!</small>
+                                    <small *ngIf="formcon['product_name'].errors?.['maxlength']" class="required-field">
+                                        Maximum length is 10 characters!</small>
+                                     <br>
+                                        <small *ngIf="formcon['product_name'].errors?.['pattern']"  class="required-field" >
+                                            Special characters are not allowed!</small>
+                                </div>
+                            </div>
+                            <div class="form-field col-lg-6 ">
+                                <input id="name" formControlName="product_price" class="input-text js-input"
+                                    type="text"(keydown)="whiteSpaceCheck($event)"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    minlength="2" maxlength="7" required #inputField
+                                    [ngClass]="{newerror: formcon['product_price'].touched && formcon['product_price'].invalid}">
+                                <label class="label required-field" for="name">Price</label>
+
+                                <div *ngIf="(formcon['product_price']?.touched || formcon['product_price']?.dirty) && formcon['product_price']?.invalid"
+                                    class="text-danger">
+                                    <small *ngIf="formcon['product_price'].errors?.['required']" class="required-field">
+                                        Product Price is required!</small>
+                                    <small *ngIf="formcon['product_price'].errors?.['minlength']"
+                                        class="required-field">
+                                        Minimum length is 2 characters!</small>
+                                    <small *ngIf="formcon['product_price'].errors?.['maxlength']"
+                                        class="required-field">
+                                        Maximum length is 7 characters!</small>
+                                        <br>
+                                        <small *ngIf="formcon['product_price'].errors?.['pattern']"
+                                        class="required-field">
+                                        Only numbers are accepted!</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-field col-lg-6 ">
+                                <input id="category" formControlName="category_name" class="input-text js-input"
+                                    type="text" (keydown)="whiteSpaceCheck($event)"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    minlength="5" maxlength="20" required
+                                    [ngClass]="{newerror: formcon['category_name'].touched && formcon['category_name'].invalid}">
+                                <label class="label required-field" for="category">Category Name</label>
+                                <div *ngIf="(formcon['category_name']?.touched || formcon['category_name']?.dirty) && formcon['category_name']?.invalid"
+                                    class="text-danger">
+                                    <small *ngIf="formcon['category_name'].errors?.['required']" class="required-field">
+                                        Category Name is required!</small>
+
+                                    <small *ngIf="formcon['category_name'].errors?.['minlength']"
+                                        class="required-field">
+                                        Minimum length is 5 characters!</small>
+                                        <small *ngIf="formcon['category_name'].errors?.['maxlength']"
+                                        class="required-field">
+                                        Maximum length is 20 characters!</small>
+                                        <br>
+                                        <small *ngIf="formcon['category_name'].errors?.['pattern']"
+                                        class="required-field">
+                                        Special characters are not allowed!</small>
+                                </div>
+                            </div>
+                            <div class="form-field col-lg-6 ">
+                                <input id="description" formControlName="description" class="input-text js-input" type="text"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    minlength="5" maxlength="50" required (keydown)="whiteSpaceCheck($event)"
+                                    [ngClass]="{newerror: formcon['description'].touched && formcon['description'].invalid}">
+                                <label class="label required-field" for="description">Description</label>
+                                <div *ngIf="(formcon['description']?.touched || formcon['description']?.dirty) && formcon['description']?.invalid"
+                                    class="text-danger">
+                                    <small *ngIf="formcon['description'].errors?.['required']" class="required-field">
+                                        Description is required!</small>
+                                        <small *ngIf="formcon['description'].errors?.['minlength']"
+                                        class="required-field">
+                                        Minimum length is 5 characters!</small>
+                                        <small *ngIf="formcon['description'].errors?.['maxlength']"
+                                        class="required-field">
+                                        Maximum length is 20 characters!</small>
+                                        <br>
+                                        <small *ngIf="formcon['description'].errors?.['pattern']"
+                                        class="required-field">
+                                        Special characters are not allowed!</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-field col-md-6">
+                                <input class="submit-btn" type="submit" value="Submit" (click)="submitButton()">
+                            </div>
+
+                            <div class="form-field col-md-6">
+                                <button class="submit-btn" style="background-image: linear-gradient(125deg, #ca4343, #970692);" value="Cancel" (click)="closeModal()">Cancel </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

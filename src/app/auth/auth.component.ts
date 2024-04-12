@@ -10,9 +10,11 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 
 export class AuthComponent implements OnInit {
   productsList: any = [];
+  productsListSearch:any;
   images: any;
   url: any;
   addnew: boolean = true;
+  searchText: any;
 
   @ViewChild('inputField') inputField!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef;
@@ -64,8 +66,10 @@ export class AuthComponent implements OnInit {
   getProduct() {
     this.http.getMethod("getTask").then((response: any) => {
       this.productsList = response.data;
-      console.log(">>>>>>>>>>>", response)
-    })
+      this.productsListSearch= response.data;
+    }).catch((error)=>{
+
+    });
   }
 
   openModal() {
@@ -97,26 +101,41 @@ export class AuthComponent implements OnInit {
     this.images = this.http.imageURL + data.file;
     this.url = data.file;
     this.productDetails = data;
-
   }
+
+  searchFun(data:any){
+    data = data.toLowerCase();
+    if (data == "") {
+      this.productsList = this.productsListSearch;
+    }
+
+    if (data) {
+      this.productsList = [];
+      this.productsListSearch.map((pro:any) => {
+        if ((pro?.name.toLowerCase()).includes((data).toLowerCase())){
+            this.productsList.push(pro); 
+        }
+      });
+    }
+  }
+
   fileChangeEvent(event: any) {
     this.images = []
     const file = event.target.files[0];
+
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/gif', 'image/png',];
-
+      
       if (!allowedTypes.includes(file.type)) {
         // Invalid file type
-
         this.http.showError("Error", "This File Format is Not Accept!")
         this.fileInput.nativeElement.value = ''; //input name clear
       } else {
         this.url = event.target.files[0];
+
         if (event.target.files && event.target.files[0]) {
           var reader = new FileReader();
-
           reader.readAsDataURL(event.target.files[0]); // read file as data url
-
           reader.onload = (event: any) => { // called once readAsDataURL is completed
             this.images = event.target.result;
           }
@@ -132,13 +151,15 @@ export class AuthComponent implements OnInit {
       if(response.status == true){
         this.getProduct();
       }
-    })
+    }).catch((error)=>{
+
+    });
   }
 
   submitButton() {
     if (this.productCreateForm.valid == true) {
       if (this.addnew == true) {
-        console.log("addd", this.addnew)
+
         var formData = new FormData();
         formData.append("name", this.productCreateForm.value.product_name);
         formData.append("price", this.productCreateForm.value.product_price);
@@ -157,19 +178,17 @@ export class AuthComponent implements OnInit {
          
         }).catch((error)=>{
 
-        })
+        });
       } else {
-        console.log("elseeeeeeeeeeeeea", this.addnew)
+   
         var formData = new FormData();
         formData.append("name", this.productCreateForm.value.product_name);
         formData.append("price", this.productCreateForm.value.product_price);
         formData.append("description", this.productCreateForm.value.description);
         formData.append("category_name", this.productCreateForm.value.category_name);
         formData.append("file", this.url);
-        // /updateTask?id=6
 
         this.http.postMethod(`${'updateTask?id=' + this.productDetails.id}`, formData).then((response: any) => {
-          console.log("resosopps", response);
           if(response.status == true){
             this.http.showSuccess("Success", "Your product has been updated successfully!")
             this.getProduct();
@@ -180,7 +199,9 @@ export class AuthComponent implements OnInit {
             this.productDetails = '';
           }      
 
-        })
+        }).catch((error)=>{
+
+        });
       }
 
     } else {

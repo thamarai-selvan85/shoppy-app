@@ -33,9 +33,8 @@ export class HttpService {
   }
 
   getMethod(path: string, flag?: Boolean) {
-    console.log("pathhhhh",this.serverURL+path)
-    return new Promise(async (resolve, reject) => {
-  
+
+    return new Promise(async (resolve, reject) => {  
       this.httpClient.get(this.serverURL + path).subscribe((data: any) => {
         if (data.status == false && !flag) {
       

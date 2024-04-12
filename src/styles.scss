@@ -9,3 +9,18 @@ body{
     color: red;
     padding-left: 0.2em;
   }
+
+  .text_wrap{
+    width: 100%;
+    padding-left: 0px;
+    max-width: 500px;
+    min-width: 100px;
+    word-break: break-word;
+    max-height: 100px;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    line-height: 21px;
+    display: -webkit-box;
+  }
